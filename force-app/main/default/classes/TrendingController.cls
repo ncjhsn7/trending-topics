@@ -30,28 +30,120 @@ public without sharing class TrendingController {
     */
 
     @AuraEnabled
-    public static String getTrendingProducts(
-        String ambiente, Boolean byState, String state, String region
-    ){
-        if(Cache.Org.contains('top6ProductTrending')) {
-            return String.valueOf(Cache.Org.get('top6ProductTrending'));
+    public static string getMostLikedProducts(){
+        List<User_Trending_Vote__c> voteCards = [SELECT Up_Votes__c, Down_Votes__c FROM User_Trending_Vote__c];
+        Map<String, Integer> productVotes = new Map<String, Integer>();
+
+        for (User_Trending_Vote__c voteCard : voteCards) {
+            if(String.isNotBlank(voteCard.Up_Votes__c)){
+                for (String upVote : voteCard.Up_Votes__c.removeEnd(';').split(';')) {
+                    if(!productVotes.containsKey(upVote))
+                        productVotes.put(upVote, 0);
+        
+                    productVotes.put(upVote, productVotes.get(upVote) + 1);
+                }
+            }
+
+            if(String.isNotBlank(voteCard.Down_Votes__c)){
+                for (String downVote : voteCard.Down_Votes__c.removeEnd(';').split(';')) {
+                    if(!productVotes.containsKey(downVote))
+                        productVotes.put(downVote, 0);
+        
+                    productVotes.put(downVote, productVotes.get(downVote) - 1);
+                }
+            }
         }
 
-        String result = JSON.serialize([
+        for (String vote : productVotes.keySet()) {
+            System.debug(vote + ' : ' + productVotes.get(vote));
+        }
+
+        
+
+        return JSON.serialize([
             SELECT
                 count(Id) n, 
                 Ambiente__c, 
                 Product2Id, 
                 description,
                 quote.Opportunity.Loja__r.Grupo_Loja__c,
-                Product2.Referencia__c
+                Product2.Referencia__c,
+                Product2.Product_Image_Link__c
             FROM quoteLineItem 
-            WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null 
-            GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description
+            WHERE Product2Id IN :productVotes.keySet()
+            GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c
             ORDER BY count(id) DESC LIMIT 6
         ]);
+    }
 
-        Cache.Org.put('top6ProductTrending', result, 300);
+    @AuraEnabled
+    public static string getFavorites(){
+        User_Trending_Vote__c voteCard = [SELECT Favorites__c FROM User_Trending_Vote__c WHERE User__c = :currentUserId LIMIT 1];
+        List<String> favorites = new List<String>(); 
+        
+        if(voteCard != null && String.isNotBlank(voteCard.Favorites__c)){
+            favorites.addAll(voteCard.Favorites__c.split(';'));
+        }
+
+        return JSON.serialize([
+            SELECT
+                count(Id) n, 
+                Ambiente__c, 
+                Product2Id, 
+                description,
+                quote.Opportunity.Loja__r.Grupo_Loja__c,
+                Product2.Referencia__c,
+                Product2.Product_Image_Link__c
+            FROM quoteLineItem 
+            WHERE Product2Id IN :favorites
+            GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c
+            ORDER BY count(id) DESC LIMIT 6
+        ]);
+    }
+    @AuraEnabled
+    public static String getTrendingProducts(String ambiente, Boolean byState, String state, String region, String timeStamp, String numProducts){
+        // if(Cache.Org.contains('top6ProductTrending')) {
+        //     return String.valueOf(Cache.Org.get('top6ProductTrending'));
+        // }
+
+        String fields = 'SELECT count(Id) n, Ambiente__c, Product2Id, description,quote.Opportunity.Loja__r.Grupo_Loja__c,Product2.Referencia__c,Product2.Product_Image_Link__c FROM quoteLineItem WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null'; 
+        String condition = '';
+        String groupBy = 'GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c';
+        String order = 'ORDER BY count(id) DESC LIMIT :numProducts';
+        
+        if (!ambiente.equalsIgnoreCase('Qualquer ambiente')) {
+            condition += ' AND Ambiente__c = :ambiente';
+        }
+
+        if(!byState && !region.equalsIgnoreCase('All')) {
+            if(region.equalsIgnoreCase('nordeste'))
+                region = 'BA, SE, AL, PE, PB, RN, CE, PI, MA';
+
+            if(region.equalsIgnoreCase('sudeste'))
+                region = 'SP, RJ, MG, ES';
+            
+            if(region.equalsIgnoreCase('sul'))
+                region = 'PR, SC, RS';
+
+            if(region.equalsIgnoreCase('centro-oeste'))
+                region = 'MT, MS, GO, DF';
+
+            if(region.equalsIgnoreCase('norte'))
+                region = 'AM, RR, AP, PA, TO, RO, AC';
+
+            region.split(',');
+            condition += ' AND quote.Opportunity.Loja__r.Grupo_Loja__c IN :region';
+        } else if (byState) {
+            condition += ' AND quote.Opportunity.Loja__r.Grupo_Loja__c = :state';
+        }
+
+        if(String.isNotBlank(timeStamp)){
+            condition += ' AND quote.LastModifiedDate LAST_N_DAYS:' + timeStamp;
+        }
+        String query = fields + condition + timeStamp + groupBy + order;
+        String result = JSON.serialize(Database.query(query));
+        
+        //Cache.Org.put('top6ProductTrending', result, 300);
 
         return result;
     }
@@ -161,41 +253,43 @@ public without sharing class TrendingController {
             userVotes = createNewVoteCard();
 
         User_Trending_Vote__c currentUserVote = userVotes[0];
-
-        if(vote == 'UP'){
-            if(currentUserVote.Down_Votes__c != null && currentUserVote.Down_Votes__c.contains(product))
-                currentUserVote.Down_Votes__c.remove(product);
-
-            currentUserVote.Up_Votes__c += (';' + product);
-        }
-
-        if(vote == 'DOWN'){
-            if(currentUserVote.Up_Votes__c != null && currentUserVote.Up_Votes__c.contains(product))
-                currentUserVote.Up_Votes__c.remove(product);
-
-            currentUserVote.Down_Votes__c += (';' + product);
-        }
-
-        if(vote == 'ND'){
-            if(currentUserVote.Down_Votes__c != null && currentUserVote.Down_Votes__c.contains(product))
-                currentUserVote.Down_Votes__c.remove(product);
-
-            if(currentUserVote.Up_Votes__c != null && currentUserVote.Up_Votes__c.contains(product))
-                currentUserVote.Up_Votes__c.remove(product);
-        }
-
-        if(vote == 'FAVORITE'){
-            if(currentUserVote.Favorites__c != null)
-                currentUserVote.Favorites__c += ';';
+        product = product + ';';
+        if(vote.equalsIgnoreCase('UP')){
+            if(!String.isBlank(currentUserVote.Down_Votes__c) && currentUserVote.Down_Votes__c.contains(product))
+                currentUserVote.Down_Votes__c = currentUserVote.Down_Votes__c.remove(product);
             
-            if(currentUserVote.Favorites__c == null)
+            if (String.isBlank(currentUserVote.Up_Votes__c))
+                currentUserVote.Up_Votes__c = product;
+            else
+                currentUserVote.Up_Votes__c += product;
+        }
+
+        if(vote.equalsIgnoreCase('DOWN')){
+            if(!String.isBlank(currentUserVote.Up_Votes__c) && currentUserVote.Up_Votes__c.contains(product))
+                currentUserVote.Up_Votes__c = currentUserVote.Up_Votes__c.remove(product);
+            
+            if (String.isBlank(currentUserVote.Down_Votes__c))
+                currentUserVote.Down_Votes__c = product;
+            else
+                currentUserVote.Down_Votes__c += product;
+        }
+
+        if(vote.equalsIgnoreCase('ND')){
+            if(currentUserVote.Down_Votes__c != null && currentUserVote.Down_Votes__c.contains(product))
+                currentUserVote.Down_Votes__c = currentUserVote.Down_Votes__c.remove(product);
+
+            if(currentUserVote.Up_Votes__c != null && currentUserVote.Up_Votes__c.contains(product))
+                currentUserVote.Up_Votes__c = currentUserVote.Up_Votes__c.remove(product);
+        }
+
+        if(vote.equalsIgnoreCase('FAVORITE')){         
+            if(String.isBlank(currentUserVote.Favorites__c))
                 currentUserVote.Favorites__c = product;
-                
-            if(!currentUserVote.Favorites__c.contains(product))
+            else
                 currentUserVote.Favorites__c += product;
         }
 
-        if(vote == 'UNFAVORITE'){
+        if(vote.equalsIgnoreCase('UNFAVORITE')){
             if(currentUserVote.Favorites__c != null && currentUserVote.Favorites__c.contains(product))
                 currentUserVote.Favorites__c.remove(product);
         }
@@ -254,3 +348,18 @@ public without sharing class TrendingController {
             }
     */
 }
+
+// String result = JSON.serialize([
+        //     SELECT
+        //         count(Id) n, 
+        //         Ambiente__c, 
+        //         Product2Id, 
+        //         description,
+        //         quote.Opportunity.Loja__r.Grupo_Loja__c,
+        //         Product2.Referencia__c,
+        //         Product2.Product_Image_Link__c
+        //     FROM quoteLineItem 
+        //     WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null
+        //     GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c
+        //     ORDER BY count(id) DESC LIMIT 6
+        // ]);
