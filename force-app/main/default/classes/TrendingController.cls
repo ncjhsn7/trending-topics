@@ -30,7 +30,7 @@ public without sharing class TrendingController {
     */
 
     @AuraEnabled
-    public static string getMostLikedProducts(){
+    public static string getMostLikedProducts(Integer numProducts){
         List<User_Trending_Vote__c> voteCards = [SELECT Up_Votes__c, Down_Votes__c FROM User_Trending_Vote__c];
         Map<String, Integer> productVotes = new Map<String, Integer>();
 
@@ -54,12 +54,33 @@ public without sharing class TrendingController {
             }
         }
 
-        for (String vote : productVotes.keySet()) {
-            System.debug(vote + ' : ' + productVotes.get(vote));
+        Map<Integer, List<String>> votesProduct = new Map<Integer, List<String>>();
+        
+        for (String product : productVotes.keySet()) {
+            Integer votes = productVotes.get(product);
+            
+            if(!votesProduct.containsKey(votes))
+                votesProduct.put(votes, new List<String>());
+
+            votesProduct.get(votes).add(product);
         }
 
+        List<Integer> votes = new List<Integer>(votesProduct.keySet());
         
+        votes.sort();
+        System.debug('X: votges product - ' + votesProduct);
+        System.debug('X: vote -' + votes);
 
+        List<String> result = new List<String>();
+        
+        for (Integer i = 0; i < numProducts; i++) {
+            if (i > votes.size() - 1)
+                break;
+
+            result.addAll(votesProduct.get(votes[i]));  
+        }
+
+        System.debug('X: result: ' + result);
         return JSON.serialize([
             SELECT
                 count(Id) n, 
@@ -70,9 +91,9 @@ public without sharing class TrendingController {
                 Product2.Referencia__c,
                 Product2.Product_Image_Link__c
             FROM quoteLineItem 
-            WHERE Product2Id IN :productVotes.keySet()
+            WHERE Product2Id IN :result
             GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c
-            ORDER BY count(id) DESC LIMIT 6
+            ORDER BY count(id) DESC LIMIT :numProducts
         ]);
     }
 
@@ -100,16 +121,17 @@ public without sharing class TrendingController {
             ORDER BY count(id) DESC LIMIT 6
         ]);
     }
+
     @AuraEnabled
-    public static String getTrendingProducts(String ambiente, Boolean byState, String state, String region, String timeStamp, String numProducts){
+    public static String getTrendingProducts(String ambiente, Boolean byState, String state, String region, Integer timeStamp, Integer numProducts){
         // if(Cache.Org.contains('top6ProductTrending')) {
         //     return String.valueOf(Cache.Org.get('top6ProductTrending'));
         // }
 
         String fields = 'SELECT count(Id) n, Ambiente__c, Product2Id, description,quote.Opportunity.Loja__r.Grupo_Loja__c,Product2.Referencia__c,Product2.Product_Image_Link__c FROM quoteLineItem WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null'; 
         String condition = '';
-        String groupBy = 'GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c';
-        String order = 'ORDER BY count(id) DESC LIMIT :numProducts';
+        String groupBy = ' GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c';
+        String order = ' ORDER BY count(id) DESC LIMIT :numProducts';
         
         if (!ambiente.equalsIgnoreCase('Qualquer ambiente')) {
             condition += ' AND Ambiente__c = :ambiente';
@@ -125,23 +147,25 @@ public without sharing class TrendingController {
             if(region.equalsIgnoreCase('sul'))
                 region = 'PR, SC, RS';
 
-            if(region.equalsIgnoreCase('centro-oeste'))
+            if(region.equalsIgnoreCase('centro oeste'))
                 region = 'MT, MS, GO, DF';
 
             if(region.equalsIgnoreCase('norte'))
                 region = 'AM, RR, AP, PA, TO, RO, AC';
 
-            region.split(',');
-            condition += ' AND quote.Opportunity.Loja__r.Grupo_Loja__c IN :region';
+            List<String> regions = region.split(',');
+            condition += ' AND quote.Opportunity.Loja__r.Grupo_Loja__c IN :regions';
         } else if (byState) {
             condition += ' AND quote.Opportunity.Loja__r.Grupo_Loja__c = :state';
         }
 
-        if(String.isNotBlank(timeStamp)){
-            condition += ' AND quote.LastModifiedDate LAST_N_DAYS:' + timeStamp;
-        }
+        condition += ' AND quote.LastModifiedDate <= LAST_N_DAYS:' + timeStamp;
+
         String query = fields + condition + timeStamp + groupBy + order;
+        System.debug('X: query > ' + Database.query(query));
+
         String result = JSON.serialize(Database.query(query));
+
         
         //Cache.Org.put('top6ProductTrending', result, 300);
 
@@ -174,7 +198,7 @@ public without sharing class TrendingController {
     //sosl tem limite de 2mil rows;
 
     @AuraEnabled
-    public static void findProductsVotes(List<String> products){
+    public static String findProductsVotes(List<String> products){
         
         Map<String, ProductTrendingInfo> result = new Map<String, ProductTrendingInfo>();
 
@@ -220,7 +244,7 @@ public without sharing class TrendingController {
             }
         }
 
-        System.debug(JSON.serialize(result));
+        JSON.serialize(result);
     }
 
     public class ProductTrendingInfo {
