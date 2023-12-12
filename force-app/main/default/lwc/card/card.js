@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import findProductsVotes from '@salesforce/apex/TrendingController.findProductsVotes';
-
+import saveUserVote from '@salesforce/apex/TrendingController.saveUserVote';
 export default class Card extends LightningElement {
     @api recordId;
     @api product = {};
@@ -20,7 +20,6 @@ export default class Card extends LightningElement {
     }
 
 
-
     connectedCallback(){
         this.runInit();
 
@@ -35,7 +34,7 @@ export default class Card extends LightningElement {
 
     async runInit(){
         this.isLoading = false;
-        
+        this.runGetVotes();
     }
 
     runGetVotes(){
@@ -45,7 +44,14 @@ export default class Card extends LightningElement {
             products: [this.recordId]
         })
         .then(res => {
+            const result = JSON.parse(res)[this.recordId];
+
             console.log('res votes: ', JSON.stringify(res));
+
+            this.currentVote = result.currentUserVote;
+            this.votes = result.votesSum;
+            this.areFavorited = result.isFavorite;
+
         })
         .catch(err => {
             console.log('err: ', err);
@@ -87,11 +93,23 @@ export default class Card extends LightningElement {
 
     handleFavorite(){
         console.log('onFavorite');
-        return false;
 
-        this.areFavorited = this.areFavorited ? false : true;
+        this.areFavorited = !this.areFavorited;
 
+        let currentA =   this.areFavorited ? 'FAVORITE' : 'UNFAVORITE'
 
+        console.log(currentA);
+
+        saveUserVote({
+            vote: currentA,
+            product: this.recordId
+        })
+        .then(res => {
+            console.log('res favoritado');
+        })
+        .catch(err => {
+            console.log(JSON.stringify(err));
+        })
         console.log('are favorite: ' + this.areFavorited);
     }
 
@@ -114,6 +132,9 @@ export default class Card extends LightningElement {
     }
 
 
+    get getFavoriteFill(){
+        return this.areFavorited ? '#0094d9' : 'none'
+    }
 
     get dissableUpVote(){
         return this.currentVote == 'UP';

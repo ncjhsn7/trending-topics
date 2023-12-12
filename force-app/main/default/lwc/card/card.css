@@ -88,6 +88,7 @@
     height: 15px;
     display: flex;
     align-items: center;
+    transform: translate(-150%, 0);
   }
   .lds-ellipsis div {
     position: absolute;

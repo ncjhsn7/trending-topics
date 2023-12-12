@@ -8,9 +8,9 @@
             <div style="box-sizing: border-box; height: 150px; width: 100%; overflow-y: clip;">
                 <div style="position: relative; width: 150px; height: 100%; border: 0px solid gray; min-height: 150px;">
 
-                    <div style="position: absolute; top: 0; right: 0; background: #ffffff59; padding: 5px">
+                    <div style="position: absolute; top: 0; right: 0; background: #ffffff59; width: 35px">
                         <a onclick={handleFavorite}>
-                            <svg style="width: 25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier2" stroke-linecap="round" stroke-linejoin="round"></g><g > <path d="M8.96173 18.9109L9.42605 18.3219L8.96173 18.9109ZM12 5.50063L11.4596 6.02073C11.601 6.16763 11.7961 6.25063 12 6.25063C12.2039 6.25063 12.399 6.16763 12.5404 6.02073L12 5.50063ZM15.0383 18.9109L15.5026 19.4999L15.0383 18.9109ZM9.42605 18.3219C7.91039 17.1271 6.25307 15.9603 4.93829 14.4798C3.64922 13.0282 2.75 11.3345 2.75 9.1371H1.25C1.25 11.8026 2.3605 13.8361 3.81672 15.4758C5.24723 17.0866 7.07077 18.3752 8.49742 19.4999L9.42605 18.3219ZM2.75 9.1371C2.75 6.98623 3.96537 5.18252 5.62436 4.42419C7.23607 3.68748 9.40166 3.88258 11.4596 6.02073L12.5404 4.98053C10.0985 2.44352 7.26409 2.02539 5.00076 3.05996C2.78471 4.07292 1.25 6.42503 1.25 9.1371H2.75ZM8.49742 19.4999C9.00965 19.9037 9.55954 20.3343 10.1168 20.6599C10.6739 20.9854 11.3096 21.25 12 21.25V19.75C11.6904 19.75 11.3261 19.6293 10.8736 19.3648C10.4213 19.1005 9.95208 18.7366 9.42605 18.3219L8.49742 19.4999ZM15.5026 19.4999C16.9292 18.3752 18.7528 17.0866 20.1833 15.4758C21.6395 13.8361 22.75 11.8026 22.75 9.1371H21.25C21.25 11.3345 20.3508 13.0282 19.0617 14.4798C17.7469 15.9603 16.0896 17.1271 14.574 18.3219L15.5026 19.4999ZM22.75 9.1371C22.75 6.42503 21.2153 4.07292 18.9992 3.05996C16.7359 2.02539 13.9015 2.44352 11.4596 4.98053L12.5404 6.02073C14.5983 3.88258 16.7639 3.68748 18.3756 4.42419C20.0346 5.18252 21.25 6.98623 21.25 9.1371H22.75ZM14.574 18.3219C14.0479 18.7366 13.5787 19.1005 13.1264 19.3648C12.6739 19.6293 12.3096 19.75 12 19.75V21.25C12.6904 21.25 13.3261 20.9854 13.8832 20.6599C14.4405 20.3343 14.9903 19.9037 15.5026 19.4999L14.574 18.3219Z" fill="#000000"></path> </g></svg>
+                            <svg viewBox="-2.4 -2.4 28.80 28.80" xmlns="http://www.w3.org/2000/svg" fill={getFavoriteFill}><g stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="#000000" stroke-width="0.504" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                         </a>
                     </div>
                     
@@ -22,22 +22,22 @@
                         ></img>
                     </a>
                         
-                    <div style="position: absolute; display: flex; background: #f4f3fb; bottom: 0; flex-direction: row; width: 100%; justify-content: space-evenly; padding: 10px;">
+                    <div style="position: absolute; background: #f4f3fb; bottom: 0; width: 100%; display: flex; flex-direction: row; justify-content: space-evenly; ">
 
-                        <div if:true={isLikesLoading}>
+                        <div if:true={isLikesLoading} style="padding: 10px">
                             <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                         </div>
-                        <div if:false={isLikesLoading}>
+                        <div if:false={isLikesLoading} style="padding: 5px; justify-content: space-evenly; display: flex; flex-direction: row; width: 100%;">
 
-                            <div style="width: 20px;">
+                            <div style="width: 25px;">
                                 <a onclick={handleDownVote} disabled={dissableDownVote}>
-                                    <svg fill="#000000" viewBox="0 0 24 24" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" transform="rotate(180)"><g  stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M15,12v8a1,1,0,0,1-1,1H10a1,1,0,0,1-1-1V12" style="fill: none; stroke: #f09393; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path d="M9,12,6.79,13.48a1,1,0,0,1-1.36-.24L3.59,10.79A1,1,0,0,1,3.78,9.4l7.61-5.92a1,1,0,0,1,1.22,0L20.22,9.4a1,1,0,0,1,.19,1.39l-1.84,2.45a1,1,0,0,1-1.36.24L15,12" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>                            
+                                    <svg viewBox="0 0 24 24" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" transform="rotate(180)"><g  stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M15,12v8a1,1,0,0,1-1,1H10a1,1,0,0,1-1-1V12" style="fill: none; stroke: #f09393; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path d="M9,12,6.79,13.48a1,1,0,0,1-1.36-.24L3.59,10.79A1,1,0,0,1,3.78,9.4l7.61-5.92a1,1,0,0,1,1.22,0L20.22,9.4a1,1,0,0,1,.19,1.39l-1.84,2.45a1,1,0,0,1-1.36.24L15,12" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>                            
                                 </a>
                             </div>
-                            <div>+12</div>
-                            <div style="width: 20px;">
+                            <div>{votes}</div>
+                            <div style="width: 25px;">
                                 <a onclick={handleUpVote} disabled={dissableUpVote}>
-                                    <svg fill="#000000" viewBox="0 0 24 24" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" transform="rotate(0)"><g  stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M15,12v8a1,1,0,0,1-1,1H10a1,1,0,0,1-1-1V12" style="fill: none; stroke: #a7f093; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path d="M9,12,6.79,13.48a1,1,0,0,1-1.36-.24L3.59,10.79A1,1,0,0,1,3.78,9.4l7.61-5.92a1,1,0,0,1,1.22,0L20.22,9.4a1,1,0,0,1,.19,1.39l-1.84,2.45a1,1,0,0,1-1.36.24L15,12" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>                            
+                                    <svg viewBox="0 0 24 24" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" transform="rotate(0)"><g  stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M15,12v8a1,1,0,0,1-1,1H10a1,1,0,0,1-1-1V12" style="fill: none; stroke: #a7f093; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path d="M9,12,6.79,13.48a1,1,0,0,1-1.36-.24L3.59,10.79A1,1,0,0,1,3.78,9.4l7.61-5.92a1,1,0,0,1,1.22,0L20.22,9.4a1,1,0,0,1,.19,1.39l-1.84,2.45a1,1,0,0,1-1.36.24L15,12" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>                            
                                 </a>
                             </div>
 
@@ -53,7 +53,13 @@
             
             <div style="padding: 10px; display: flex; flex-direction: column; justify-content: space-between; font-weight: bold; font-size: 16px;">
                 <div style="font-size: 14px;">{product.Name}</div>
-                <div style="color: #060693; margin: 10px; text-align: center; font-weight: bold; font-size: 16px; border: 1px solid; border-radius: 8px;">{getIndex}° mais popular</div>
+                <!-- <svg>
+                    <g><g><g><path fill="#000000" d="M212.5,49.6c-10.9,0.6-21,1.5-22.5,1.9c-3.2,0.9-5.9,3.8-5.9,6.5c0,3.2,2.2,6.4,9.2,13.4c3.7,3.6,6.8,7,6.8,7.4c0,0.3-13.8,14.5-30.7,31.3l-30.6,30.6l-16.3-16.2c-9-9-17.1-16.6-18.1-17.1c-2.5-1.1-6.3-1-8.7,0.1c-1.2,0.5-20.8,19.8-43.8,42.7c-49.2,49.2-45.2,43.4-36.4,52.1c4.6,4.5,5.7,5.3,7.5,5.3c2,0,4.9-2.8,39.6-37.4l37.4-37.4l16,16c8.8,8.8,16.9,16.4,18,16.9c2.4,1.1,6.5,1.2,9,0.3c1-0.3,17.8-16.7,37.4-36.3L216,94.1l7.2,7.1c8.7,8.6,9.6,9.2,13.2,9.2c3.7,0,6.1-2.5,7.1-7.2c0.4-1.9,1.2-13.2,1.7-25.1c1.1-21.6,1.1-21.9-0.1-24.3c-1.7-3.2-5.8-5.4-9.8-5.3C233.6,48.5,223.5,49,212.5,49.6z"/></g></g></g>
+                    <text>AAAAAAAAA</text>
+                </svg> -->
+                <div style="color: #060693; margin: 10px; text-align: center; font-weight: bold; font-size: 16px; border: 1px solid; border-radius: 8px;">
+                     {getIndex}° mais popular
+                </div>
             </div>
 
         </div>
@@ -109,7 +115,7 @@
                 <footer class="slds-modal__footer" style="border-radius: 0 0 10px 10px">
                     <div class="slds-button-group" role="group">
                         <div if:true={modalConfig.rejectLabel}>
-                            <lightning-button data-name="reject" data-modal="changePayment" label={modalConfig.rejectLabel} title="Voltar atrás" onclick={closeModal} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button data-name="reject" data-modal="changePayment" label={modalConfig.rejectLabel} title="Voltar atrás" onclick={closeModal} class="slds-m-left_x-small" variant="brand"></lightning-button>
                         </div>
                     </div>
                 </footer>
