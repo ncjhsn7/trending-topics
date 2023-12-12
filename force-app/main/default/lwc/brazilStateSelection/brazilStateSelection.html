@@ -748,12 +748,28 @@
         <div style="display: flex; align-items: center;">
           <div style="height: 60%; width: 100%; background: #0094d9; padding: 10px 0 10px 10px; border-radius: 19px 0px 0px 25px; color: white; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
                 <div style="text-align: center;font-weight: bold;font-size: 18px;">Tendências no Brasil</div>
-                <div>
-                  #123
+                
+                <div style="display: flex; flex-direction: column; color: white; cursor: pointer; padding: 15px">
+                    <p style="padding: 10px 20px">
+                      #12730E - 60x120
+                    </p>
+                    <p style="padding: 10px 20px">
+                      #24486E - 120x120
+                    </p>
+                    <p style="padding: 10px 20px">
+                      #28754E - 90x90
+                    </p>
+                    <p style="padding: 10px 20px">
+                      #28754E - 20x120
+                    </p>
+                    <p style="padding: 10px 20px">
+                      #12730E - 80x80
+                    </p>
+                    <p style="padding: 10px 20px">
+                      #29138E   - 90x90
+                    </p>
                 </div>
-                <div>
-                  #123
-                </div>
+                
             </div>
         </div>
 
@@ -802,9 +818,7 @@
                   <c-ilustrator message="Sem resultados para essa pesquisa!"></c-ilustrator>
               </div>
 
-              <div if:true={hasFavorites} style="padding: 15px; display: grid; grid-template-columns: 1fr 3fr 1fr; grid-gap: 20px;">
-              <div></div>
-              <div>
+              <div if:true={hasFavorites} style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px;">
                 <template for:each={myFavorites} for:item="product" for:index="index">
                     <c-card 
                       record-id={product.Product2Id} 
@@ -812,11 +826,9 @@
                       key={product.Product2Id}
                       parent={self}
                       index={index}
-                      show-trending="false"
+                      show-trending="true"
                     ></c-card>
                 </template>
-              </div>
-              <div></div>
               </div>
           </div>
         </div>

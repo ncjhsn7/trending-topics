@@ -29,6 +29,11 @@ export default class Card extends LightningElement {
         return this.index + 1;
     }
 
+    toPromo = ['01t3s000003uUdTAAU', '01t3s000003uUckAAE'];
+
+    get getDisplayEmPromo(){
+        return this.toPromo.includes(this.recordId);
+    }
 
     connectedCallback(){
         this.runInit();
