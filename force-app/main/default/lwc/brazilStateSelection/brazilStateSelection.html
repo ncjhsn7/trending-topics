@@ -735,6 +735,7 @@
                           key={product.Product2Id}
                           parent={self}
                           index={index}
+                          show-trending="true"
                         ></c-card>
                     </template>
                   </div>
@@ -760,8 +761,7 @@
     </div>
 
     <div>
-        PARTE INFERIOR
-        <lightning-button-group>
+        <lightning-button-group style="margin-left:32vw;margin-top:10vh">
         <template if:true={isMostPopular}>
             <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
             data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
@@ -781,18 +781,45 @@
         </template>
 
         <template if:true={isMostVoted}>
-            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
-            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
-            <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
-        </template>
-      </lightning-button-group>
+          <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+          data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
+          <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+          data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
+          <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
+          data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+      </template>
+    </lightning-button-group>
 
+    <template if:true={isMyFavorites}>
+        <div style="height: 100%;">
+          <div if:true={isLoading.favoritesSearch} style="height: 50%; display: flex; justify-content: center; align-items: center;">
+              <div>
+                <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+              </div>  
+          </div>
+          <div if:false={isLoading.favoritesSearch}>
+              <div if:false={hasFavorites} style="margin-top: 50px;">
+                  <c-ilustrator message="Sem resultados para essa pesquisa!"></c-ilustrator>
+              </div>
+
+              <div if:true={hasFavorites} style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px;">
+                <template for:each={myFavorites} for:item="product" for:index="index">
+                    <c-card 
+                      record-id={product.Product2Id} 
+                      product={product}
+                      key={product.Product2Id}
+                      parent={self}
+                      index={index}
+                      show-trending="false"
+                    ></c-card>
+                </template>
+              </div>
+          </div>
+        </div>
+    </template>
     </div>
 
-    <lightning-button-group style="margin: -4px 0 0 0;">
+    <!-- <lightning-button-group style="margin: -4px 0 0 0;">
       <template if:true={getIsOneDay}>
         
           <button class="slds-button slds-button_brand" style='width: 140px' onclick={handleTimeSelection} 
@@ -823,7 +850,7 @@
 
 
 
-    </lightning-button-group>
+    </lightning-button-group> -->
 
 
   </article>

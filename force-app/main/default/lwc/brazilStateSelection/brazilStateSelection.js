@@ -1,5 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import getTrendingProducts from '@salesforce/apex/TrendingController.getTrendingProducts';
+import getFavorites from '@salesforce/apex/TrendingController.getFavorites';
 
 export default class BrazilStateSelection extends LightningElement {
 
@@ -11,7 +12,8 @@ export default class BrazilStateSelection extends LightningElement {
     @track selectedState;
 
     @track isLoading = {
-        productsSearch: true
+        productsSearch: true,
+        favoritesSearch: true,
     }
 
     @track trendingProducts = [];
@@ -175,27 +177,6 @@ export default class BrazilStateSelection extends LightningElement {
         this.runGetTrendingProducts();
     }
 
-    optionTrending = 'isMostPopular';
-
-    get isMostPopular () {
-        return this.optionTrending == 'isMostPopular';
-    }
-    get isMyFavorites () {
-        return this.optionTrending == 'isMyFavorites';
-    }
-
-    get isMostVoted () {
-        return this.optionTrending == 'isMostVoted';
-    }
-
-    handleOptionsTrending(event) {
-        const value = event.target.dataset.value;
-
-        this.optionTrending = value;
-        console.clear();
-        console.log('X: - ' + value);
-    }
-
     get isTOSelected(){
         return this.selectedState == 'TO' ? 'fill: #003399' : 'fill: #0094d9';
     }
@@ -327,4 +308,51 @@ export default class BrazilStateSelection extends LightningElement {
 
         return 'all';
     }
+
+    optionTrending = 'isMostPopular';
+
+    get isMostPopular () {
+        return this.optionTrending == 'isMostPopular';
+    }
+    get isMyFavorites () {
+        return this.optionTrending == 'isMyFavorites';
+    }
+
+    get isMostVoted () {
+        return this.optionTrending == 'isMostVoted';
+    }
+
+    handleOptionsTrending(event) {
+        const value = event.target.dataset.value;
+
+        this.optionTrending = value;
+
+        if (value == 'isMyFavorites') {
+            this.runGetFavorites();
+        }
+    }
+
+    @track myFavorites = [];
+
+    get hasFavorites() {
+        return this.myFavorites.length > 0;
+    }
+
+    runGetFavorites(){
+        this.isLoading.favoritesSearch = true;
+
+        getFavorites().then(res => {
+            this.myFavorites = JSON.parse(res);
+            console.clear();
+            console.log('X: get Favorites', res);
+        })
+        .catch(err => {
+            console.log('err: ', JSON.stringify(err));
+        })
+        .finally(()=>{
+            this.isLoading.favoritesSearch = false;
+        })
+
+    }
+
 }
