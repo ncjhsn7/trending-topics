@@ -1,4 +1,5 @@
 import { LightningElement, api, track } from 'lwc';
+import findProductsVotes from '@salesforce/apex/TrendingController.findProductsVotes';
 
 export default class Card extends LightningElement {
     @api recordId;
@@ -12,7 +13,7 @@ export default class Card extends LightningElement {
 
     @track isLoading = true;
 
-
+    @track isLikesLoading = true;
 
     get getIndex(){
         return this.index + 1;
@@ -34,10 +35,24 @@ export default class Card extends LightningElement {
 
     async runInit(){
         this.isLoading = false;
+        
     }
 
     runGetVotes(){
+        this.isLikesLoading = true;
 
+        findProductsVotes({
+            products: [this.recordId]
+        })
+        .then(res => {
+            console.log('res votes: ', JSON.stringify(res));
+        })
+        .catch(err => {
+            console.log('err: ', err);
+        })
+        .finally(()=>{
+            this.isLikesLoading = false;
+        })
     }
 
     handleUpVote(){
@@ -130,5 +145,7 @@ export default class Card extends LightningElement {
         };
     }
 
-
+    closeModal(){
+        this.setModalConfigToDefault();
+    }
 }

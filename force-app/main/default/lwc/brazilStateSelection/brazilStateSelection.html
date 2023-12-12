@@ -762,18 +762,68 @@
     <div>
         PARTE INFERIOR
         <lightning-button-group>
-              <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleToggleSelection} 
-              data-question='selectionByState' data-value='Sim'>Mais</button>
-              <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleToggleSelection} 
-              data-question='selectionByState' data-value='Não'>Por região</button>
-        </lightning-button-group>
+        <template if:true={isMostPopular}>
+            <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
+            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
+            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+        </template>
 
-        <template if:true={mostPopular}></template>
-        <template if:true={most}></template>
-        <template if:true={mostPopular}></template>
+        <template if:true={isMyFavorites}>
+            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
+            <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
+            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+        </template>
+
+        <template if:true={isMostVoted}>
+            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
+            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
+            <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
+            data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+        </template>
+      </lightning-button-group>
+
     </div>
 
+    <lightning-button-group style="margin: -4px 0 0 0;">
+      <template if:true={getIsOneDay}>
+        
+          <button class="slds-button slds-button_brand" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='1'>Hoje</button>
+          <button class="slds-button slds-button_neutral" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='7'>7 Dias</button>
+          <button class="slds-button slds-button_neutral" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='15'>15 Dias</button>
 
+      </template>
+      <template if:true={getIsSevenDay}>
+          <button class="slds-button slds-button_neutral" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='1'>Hoje</button>
+          <button class="slds-button slds-button_brand" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='7'>7 Dias</button>
+          <button class="slds-button slds-button_neutral" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='15'>15 Dias</button>
+
+      </template>
+      <template if:true={getIsfiftyteenDay}>
+          <button class="slds-button slds-button_neutral" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='1'>Hoje</button>
+          <button class="slds-button slds-button_neutral" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='7'>7 dias</button>
+          <button class="slds-button slds-button_brand" style='width: 140px' onclick={handleTimeSelection} 
+          data-question='selectionByState' data-value='15'>15 Dias</button>
+      </template>
+
+
+
+    </lightning-button-group>
 
 
   </article>

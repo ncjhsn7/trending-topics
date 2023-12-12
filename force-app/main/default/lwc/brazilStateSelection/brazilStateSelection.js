@@ -175,7 +175,26 @@ export default class BrazilStateSelection extends LightningElement {
         this.runGetTrendingProducts();
     }
 
+    optionTrending = 'isMostPopular';
 
+    get isMostPopular () {
+        return this.optionTrending == 'isMostPopular';
+    }
+    get isMyFavorites () {
+        return this.optionTrending == 'isMyFavorites';
+    }
+
+    get isMostVoted () {
+        return this.optionTrending == 'isMostVoted';
+    }
+
+    handleOptionsTrending(event) {
+        const value = event.target.dataset.value;
+
+        this.optionTrending = value;
+        console.clear();
+        console.log('X: - ' + value);
+    }
 
     get isTOSelected(){
         return this.selectedState == 'TO' ? 'fill: #003399' : 'fill: #0094d9';
