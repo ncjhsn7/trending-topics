@@ -304,8 +304,6 @@ public without sharing class TrendingController {
             userVotes = createNewVoteCard();
 
         User_Trending_Vote__c currentUserVote = userVotes[0];
-
-        String toCompare = product;
         product = product + ';';
         
         if(vote.equalsIgnoreCase('UP')){
@@ -344,8 +342,8 @@ public without sharing class TrendingController {
         }
 
         if(vote.equalsIgnoreCase('UNFAVORITE')){
-            if(currentUserVote.Favorites__c != null && currentUserVote.Favorites__c.contains(toCompare))
-                currentUserVote.Favorites__c.remove(toCompare);
+            if(!String.isBlank(currentUserVote.Favorites__c) && currentUserVote.Favorites__c.contains(product))
+                currentUserVote.Favorites__c = currentUserVote.Favorites__c.remove(product);
         }
 
         update currentUserVote;
