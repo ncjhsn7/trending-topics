@@ -30,6 +30,25 @@ public without sharing class TrendingController {
     */
 
     @AuraEnabled
+    public static string getProductComments(String product){
+        return JSON.serialize([
+            SELECT
+                Comment__c
+            FROM Product_Comment__c
+            WHERE Product__c = :product
+            ORDER BY CreatedDate DESC
+        ]);
+    }
+
+    @AuraEnabled
+    public static void createProductComment(String product, String comment){
+        insert new Product_Comment__c(
+            Product__c = product,
+            Comment__c = comment
+        );
+    }
+
+    @AuraEnabled
     public static string getMostLikedProducts(Integer numProducts){
         List<User_Trending_Vote__c> voteCards = [SELECT Up_Votes__c, Down_Votes__c FROM User_Trending_Vote__c];
         Map<String, Integer> productVotes = new Map<String, Integer>();
