@@ -802,7 +802,9 @@
                   <c-ilustrator message="Sem resultados para essa pesquisa!"></c-ilustrator>
               </div>
 
-              <div if:true={hasFavorites} style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px;">
+              <div if:true={hasFavorites} style="padding: 15px; display: grid; grid-template-columns: 1fr 3fr 1fr; grid-gap: 20px;">
+              <div></div>
+              <div>
                 <template for:each={myFavorites} for:item="product" for:index="index">
                     <c-card 
                       record-id={product.Product2Id} 
@@ -813,6 +815,8 @@
                       show-trending="false"
                     ></c-card>
                 </template>
+              </div>
+              <div></div>
               </div>
           </div>
         </div>
