@@ -103,7 +103,7 @@
                             <div if:false={modalConfig.isLoading} >
                                     <div>
                                         <div class="slds-p-around_medium lgc-bg">
-                                            <lightning-input disabled={modalConfig.isInsertCommentLoading} type="text" label="Enter some text" onchange={handleInputChange}></lightning-input>
+                                            <lightning-input disabled={modalConfig.isInsertCommentLoading} type="text" placeholder="Comentar sobre o produto..." onchange={handleInputChange}></lightning-input>
                                         </div>
                                     </div>
                                     <div>
@@ -117,7 +117,7 @@
                                         <div if:false={modalConfig.isInsertCommentLoading} style="margin: 50px;">
                                             <template for:each={comments} for:item="comment" for:index="index">
                                                 <div key={comment}>
-                                                    <div style="display: flex; justify-content: space-between; font-size: 16px">
+                                                    <div style="display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 20px">
                                                         <div style="margin-bottom: 20px">
                                                             <div style="font-weight: bold;">
                                                                 {comment.CreatedBy.Name} - ({comment.CreatedBy.Profile.Name} - Hoje)
