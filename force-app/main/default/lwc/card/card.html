@@ -10,7 +10,7 @@
 
                     <div style="position: absolute; top: 0; right: 0; background: #ffffff59; width: 35px">
                         <a onclick={handleFavorite}>
-                            <svg viewBox="-2.4 -2.4 28.80 28.80" xmlns="http://www.w3.org/2000/svg" fill={getFavoriteFill}><g stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="#000000" stroke-width="0.504" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                            <svg viewBox="-2.4 -2.4 28.80 28.80" xmlns="http://www.w3.org/2000/svg"  fill={getFavoriteFill}><g stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round" stroke-width="0.048"></g><g> <path stroke={getFavoriteStroke} fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke-width="0.504" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                         </a>
                     </div>
                     
@@ -27,18 +27,18 @@
                         <div if:true={isLikesLoading} style="padding: 10px">
                             <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                         </div>
-                        <div if:false={isLikesLoading} style="padding: 5px; justify-content: space-evenly; display: flex; flex-direction: row; width: 100%;">
+                        <div if:false={isLikesLoading} style="line-height: 30px;  padding: 5px; justify-content: space-evenly; display: flex; flex-direction: row; width: 100%;">
 
-                            <div style="width: 25px;">
+                            <div style="width: 30px;">
                                 <a onclick={handleDownVote} disabled={dissableDownVote}>
-                                    <svg viewBox="0 0 24 24" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" transform="rotate(180)"><g  stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M15,12v8a1,1,0,0,1-1,1H10a1,1,0,0,1-1-1V12" style="fill: none; stroke: #f09393; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path d="M9,12,6.79,13.48a1,1,0,0,1-1.36-.24L3.59,10.79A1,1,0,0,1,3.78,9.4l7.61-5.92a1,1,0,0,1,1.22,0L20.22,9.4a1,1,0,0,1,.19,1.39l-1.84,2.45a1,1,0,0,1-1.36.24L15,12" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>                            
-                                </a>
+                                    <svg  viewBox="0 0 24 24"  fill-opacity={getDeslikeOpacity} fill={getDeslikeFill} xmlns="http://www.w3.org/2000/svg" transform="rotate(180)"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g> <path stroke={getDeslikeStroke} d="M11.9997 17.9998H9.32968C6.01968 17.9998 4.65968 15.6498 6.31968 12.7798L7.65968 10.4698L8.99968 8.15982C10.6597 5.28982 13.3697 5.28982 15.0297 8.15982L16.3697 10.4698L17.7097 12.7798C19.3697 15.6498 18.0097 17.9998 14.6997 17.9998H11.9997Z" stroke-width="0.4800000000000001" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>                                </a>
                             </div>
-                            <div>{votes}</div>
-                            <div style="width: 25px;">
+                            <div>
+                                {votes}
+                            </div>
+                            <div style="width: 30px;">
                                 <a onclick={handleUpVote} disabled={dissableUpVote}>
-                                    <svg viewBox="0 0 24 24" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" transform="rotate(0)"><g  stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M15,12v8a1,1,0,0,1-1,1H10a1,1,0,0,1-1-1V12" style="fill: none; stroke: #a7f093; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path d="M9,12,6.79,13.48a1,1,0,0,1-1.36-.24L3.59,10.79A1,1,0,0,1,3.78,9.4l7.61-5.92a1,1,0,0,1,1.22,0L20.22,9.4a1,1,0,0,1,.19,1.39l-1.84,2.45a1,1,0,0,1-1.36.24L15,12" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>                            
-                                </a>
+                                    <svg  viewBox="0 0 24 24" fill-opacity={getLikeOpacity} fill={getLikeFill} xmlns="http://www.w3.org/2000/svg" transform="rotate(0)"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g> <path stroke={getLikeStroke} d="M11.9997 17.9998H9.32968C6.01968 17.9998 4.65968 15.6498 6.31968 12.7798L7.65968 10.4698L8.99968 8.15982C10.6597 5.28982 13.3697 5.28982 15.0297 8.15982L16.3697 10.4698L17.7097 12.7798C19.3697 15.6498 18.0097 17.9998 14.6997 17.9998H11.9997Z" stroke-width="0.4800000000000001" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>                                </a>
                             </div>
 
                         </div>
@@ -52,12 +52,8 @@
             </div>
             
             <div style="padding: 10px; display: flex; flex-direction: column; justify-content: space-between; font-weight: bold; font-size: 16px;">
-                <div style="font-size: 14px;">{product.Name}</div>
-                <!-- <svg>
-                    <g><g><g><path fill="#000000" d="M212.5,49.6c-10.9,0.6-21,1.5-22.5,1.9c-3.2,0.9-5.9,3.8-5.9,6.5c0,3.2,2.2,6.4,9.2,13.4c3.7,3.6,6.8,7,6.8,7.4c0,0.3-13.8,14.5-30.7,31.3l-30.6,30.6l-16.3-16.2c-9-9-17.1-16.6-18.1-17.1c-2.5-1.1-6.3-1-8.7,0.1c-1.2,0.5-20.8,19.8-43.8,42.7c-49.2,49.2-45.2,43.4-36.4,52.1c4.6,4.5,5.7,5.3,7.5,5.3c2,0,4.9-2.8,39.6-37.4l37.4-37.4l16,16c8.8,8.8,16.9,16.4,18,16.9c2.4,1.1,6.5,1.2,9,0.3c1-0.3,17.8-16.7,37.4-36.3L216,94.1l7.2,7.1c8.7,8.6,9.6,9.2,13.2,9.2c3.7,0,6.1-2.5,7.1-7.2c0.4-1.9,1.2-13.2,1.7-25.1c1.1-21.6,1.1-21.9-0.1-24.3c-1.7-3.2-5.8-5.4-9.8-5.3C233.6,48.5,223.5,49,212.5,49.6z"/></g></g></g>
-                    <text>AAAAAAAAA</text>
-                </svg> -->
-                <div style="color: #060693; margin: 10px; text-align: center; font-weight: bold; font-size: 16px; border: 1px solid; border-radius: 8px;">
+                <div style="font-size: 14px;">{product.Referencia__c} - {product.Name}</div>
+                <div if:true={getShowTrending} style="color: #060693; margin: 10px; text-align: center; font-weight: bold; font-size: 16px; border: 1px solid; border-radius: 8px;">
                      {getIndex}° mais popular
                 </div>
             </div>
@@ -84,7 +80,7 @@
                         <div>
                             <div class="slds-m-bottom_medium">
                                 <div style="margin-left: 10px .5rem 0 .5rem; text-align: center; font-size: 18px; font-weight: 500;">
-                                    {product.Name}
+                                   {product.Name}
                                 </div>
                             </div>
 
@@ -105,7 +101,40 @@
                             </div>
 
                             <div if:false={modalConfig.isLoading} >
-                                    CHAT
+                                    <div>
+                                        <div class="slds-p-around_medium lgc-bg">
+                                            <lightning-input disabled={modalConfig.isInsertCommentLoading} type="text" label="Enter some text" onchange={handleInputChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                    <div>
+
+                                        <div if:true={modalConfig.isInsertCommentLoading} style="display: flex; justify-content: center; margin-top: 100px;">
+                                            <div style="height: 80px; display: grid; place-content: center;">
+                                                <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                            </div>
+                                        </div>
+
+                                        <div if:false={modalConfig.isInsertCommentLoading} style="margin: 50px;">
+                                            <template for:each={comments} for:item="comment" for:index="index">
+                                                <div key={comment}>
+                                                    <div style="display: flex; justify-content: space-between; font-size: 16px">
+                                                        <div style="margin-bottom: 20px">
+                                                            <div style="font-weight: bold;">
+                                                                {comment.CreatedBy.Name} - ({comment.CreatedBy.Profile.Name} - Hoje)
+                                                            </div>
+                                                            <div>
+                                                                {comment.Comment__c}
+                                                            </div>
+                                                        </div>
+                                                        <a style="width: 20px; cursor: pointer" onclick={deleteComment} data-value={comment.Comment__c}>
+                                                            <svg viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M32 241.6c-11.2 0-20-8.8-20-20s8.8-20 20-20l940 1.6c11.2 0 20 8.8 20 20s-8.8 20-20 20L32 241.6zM186.4 282.4c0-11.2 8.8-20 20-20s20 8.8 20 20v688.8l585.6-6.4V289.6c0-11.2 8.8-20 20-20s20 8.8 20 20v716.8l-666.4 7.2V282.4z" fill=""></path><path d="M682.4 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM367.2 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM524.8 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM655.2 213.6v-48.8c0-17.6-14.4-32-32-32H418.4c-18.4 0-32 14.4-32 32.8V208h-40v-42.4c0-40 32.8-72.8 72.8-72.8H624c40 0 72.8 32.8 72.8 72.8v48.8h-41.6z" fill=""></path></g></svg>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        
+                                    </div>
                             </div>
 
                         </div>

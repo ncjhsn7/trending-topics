@@ -33,13 +33,15 @@ public without sharing class TrendingController {
     public static string getProductComments(String product){
         return JSON.serialize([
             SELECT
-                Comment__c
+                Comment__c,
+                CreatedDate,
+                CreatedBy.Name,
+                CreatedBy.Profile.Name
             FROM Product_Comment__c
             WHERE Product__c = :product
             ORDER BY CreatedDate DESC
         ]);
     }
-
     @AuraEnabled
     public static void createProductComment(String product, String comment){
         insert new Product_Comment__c(
@@ -54,7 +56,7 @@ public without sharing class TrendingController {
             SELECT
                 Id
             FROM Product_Comment__c
-            WHERE Product__c = :product
+            WHERE Id = :product
         ];
     }
 
@@ -134,20 +136,18 @@ public without sharing class TrendingController {
         if(voteCard != null && String.isNotBlank(voteCard.Favorites__c)){
             favorites.addAll(voteCard.Favorites__c.split(';'));
         }
-
+        
         return JSON.serialize([
             SELECT
-                count(Id) n, 
-                Ambiente__c, 
-                Product2Id, 
+                count(Product2Id) product, 
                 description,
-                quote.Opportunity.Loja__r.Grupo_Loja__c,
                 Product2.Referencia__c,
-                Product2.Product_Image_Link__c
+                Product2.Product_Image_Link__c,
+                Product2.Name
             FROM quoteLineItem 
             WHERE Product2Id IN :favorites
-            GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c
-            ORDER BY count(id) DESC LIMIT 6
+            GROUP BY Description, Product2.Referencia__c, Product2.Product_Image_Link__c, Product2.Name
+            LIMIT 6
         ]);
     }
 
@@ -157,7 +157,7 @@ public without sharing class TrendingController {
         //     return String.valueOf(Cache.Org.get('top6ProductTrending'));
         // }
 
-        String fields = 'SELECT count(Id) n, Ambiente__c, Product2Id, Product2.Name ,quote.Opportunity.Loja__r.Grupo_Loja__c,Product2.Referencia__c,Product2.Product_Image_Link__c FROM quoteLineItem WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null'; 
+        String fields = 'SELECT count(Id) n, Ambiente__c, Product2Id, Product2.Name ,quote.Opportunity.Loja__r.Grupo_Loja__c,Product2.Referencia__c,Product2.Product_Image_Link__c FROM quoteLineItem WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null AND (NOT Product2.Name LIKE \'%ARG %\') AND (NOT Product2.Name LIKE \'%REJ %\') AND (NOT Product2.Name LIKE \'%REJUNTE %\') AND (NOT Product2.Name LIKE \'%NIVELADOR %\') '; 
         String condition = '';
         String groupBy = ' GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, Product2.Name, Product2.Product_Image_Link__c';
         String order = ' ORDER BY count(id) DESC LIMIT :numProducts';

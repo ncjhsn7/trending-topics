@@ -1,11 +1,21 @@
 import { LightningElement, api, track } from 'lwc';
 import findProductsVotes from '@salesforce/apex/TrendingController.findProductsVotes';
 import saveUserVote from '@salesforce/apex/TrendingController.saveUserVote';
+import getProductComments from '@salesforce/apex/TrendingController.getProductComments';
+import createProductComment from '@salesforce/apex/TrendingController.createProductComment';
+import deleteProductComment from '@salesforce/apex/TrendingController.deleteProductComment';
+
 export default class Card extends LightningElement {
     @api recordId;
     @api product = {};
     @api parent;
     @api index;
+
+    @api showTrending = 'true';
+
+    get getShowTrending(){
+        return this.showTrending == 'true';
+    }
 
     @api votes;
     @api currentVote;
@@ -29,6 +39,9 @@ export default class Card extends LightningElement {
                 if(this.modalConfig.showModal)
                     this.setModalConfigToDefault();
             }
+            if(e.key == 'Enter' && this.modalConfig.showModal == true && this.newComment)
+                this.insertComment();
+
         }, false);
     }
 
@@ -64,7 +77,7 @@ export default class Card extends LightningElement {
     handleUpVote(){
         console.log('upVote');
 
-        return false;
+        let currentA =  this.currentVote == 'UP' ? 'ND' : 'UP'
 
         if(this.currentVote == 'UP'){
             this.currentVote = null;
@@ -74,11 +87,24 @@ export default class Card extends LightningElement {
             this.votes += 1;
         }
 
-        this.sendVote();
+        console.log('current up vote: ', currentA)
+
+        saveUserVote({
+            vote: currentA,
+            product: this.recordId
+        })
+        .then(res => {
+            console.log('res favoritado');
+        })
+        .catch(err => {
+            console.log(JSON.stringify(err));
+        })
+
     }
     handleDownVote(){
         console.log('downVote');
-        return false;
+
+        let currentA =  this.currentVote == 'DOWN' ? 'ND' : 'DOWN'
 
         if(this.currentVote == 'DOWN'){
             this.currentVote = null;
@@ -88,7 +114,19 @@ export default class Card extends LightningElement {
             this.votes -= 1;
         }
 
-        this.sendVote();
+        console.log('current down vote: ', currentA)
+
+        saveUserVote({
+            vote: currentA,
+            product: this.recordId
+        })
+        .then(res => {
+            console.log('res favoritado');
+        })
+        .catch(err => {
+            console.log(JSON.stringify(err));
+        })
+
     }
 
     handleFavorite(){
@@ -113,28 +151,39 @@ export default class Card extends LightningElement {
         console.log('are favorite: ' + this.areFavorited);
     }
 
-    sendVote(){
-        this.isLoading = true;
-
-        updateVote({
-            recordId: this.recordId,
-            vote: this.currentVote
-        })
-        .then(res => {
-            console.log('res updateVote: ' + JSON.stringify(res));
-        })
-        .catch(err => {
-            console.log('err updateVote: ' + JSON.stringify(err));
-        })
-        .finally(()=>{
-            this.isLoading = false;
-        })
+    get getFavoriteStroke(){
+        return this.areFavorited ? '#0094d9' : '#000000'
     }
-
 
     get getFavoriteFill(){
         return this.areFavorited ? '#0094d9' : 'none'
     }
+
+
+
+    get getDeslikeFill(){
+        return this.currentVote == 'DOWN' ? '#f84343' : '#000000'
+    }
+    get getDeslikeStroke(){
+        return this.currentVote == 'DOWN' ? '#f84343' : '#000000'
+    }
+
+    get getLikeFill(){
+        return this.currentVote == 'UP' ? '#52ff52' : '#000000'
+    }
+    get getLikeStroke(){
+        return this.currentVote == 'UP' ? '#52ff52' : '#000000'
+    }
+
+    get getDeslikeOpacity(){
+        return this.currentVote == 'DOWN' ? 1 : 0;
+    }
+
+    get getLikeOpacity(){
+        return this.currentVote == 'UP' ? 1 : 0;
+    }
+
+
 
     get dissableUpVote(){
         return this.currentVote == 'UP';
@@ -147,7 +196,86 @@ export default class Card extends LightningElement {
     openModal(){
         this.modalConfig.showModal = true;
 
-        
+        this.runGetComments();
+    }
+    
+
+    runGetComments(){
+
+        this.modalConfig.isLoading = false;
+        this.modalConfig.isInsertCommentLoading = true;
+
+        getProductComments({
+            product: this.recordId
+        })
+        .then(res => {
+            console.log(JSON.parse(res));
+            this.comments = JSON.parse(res);
+        })
+        .catch(err => {
+            console.log('err: ', err)
+
+        })
+        .finally(()=>{
+            // this.modalConfig.isLoading = false;
+            this.modalConfig.isInsertCommentLoading = false;
+        })
+
+    }
+
+    @track newComment = '';
+
+    @track comments = [];
+
+    handleInputChange(event) {
+        this.newComment = event.detail.value;
+    }
+
+    insertComment(event){
+
+        if(!this.newComment) return;
+
+        this.modalConfig.isInsertCommentLoading = true;
+
+        createProductComment({
+            product: this.recordId,
+            comment: this.newComment
+        })
+        .then(res => {
+            console.log('foi');
+        })
+        .catch(err => {
+            console.log('err: ', err);
+        })
+        .finally(()=>{
+            this.newComment = '';
+            this.runGetComments();
+        })
+
+
+    }
+
+    deleteComment(event){
+        const comment = event.target.dataset.value;
+
+        console.log(comment);
+
+        this.modalConfig.isInsertCommentLoading = true;
+
+        deleteProductComment({
+            product: comment
+        })
+        .then(res => {
+            console.log('foi');
+
+        })
+        .catch(err => {
+            console.log('err: ', err);
+
+        })
+        .finally(()=>{
+            this.runGetComments();
+        })
     }
 
     @track modalConfig = {
@@ -161,6 +289,7 @@ export default class Card extends LightningElement {
         this.modalConfig = {
             showModal: false,
             isLoading: true,
+            isInsertCommentLoading: false,
             message: '',
             rejectLabel: 'Voltar'
         };
