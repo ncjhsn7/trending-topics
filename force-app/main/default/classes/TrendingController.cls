@@ -49,6 +49,16 @@ public without sharing class TrendingController {
     }
 
     @AuraEnabled
+    public static void deleteProductComment(String product){
+        delete [
+            SELECT
+                Id
+            FROM Product_Comment__c
+            WHERE Product__c = :product
+        ];
+    }
+
+    @AuraEnabled
     public static string getMostLikedProducts(Integer numProducts){
         List<User_Trending_Vote__c> voteCards = [SELECT Up_Votes__c, Down_Votes__c FROM User_Trending_Vote__c];
         Map<String, Integer> productVotes = new Map<String, Integer>();
