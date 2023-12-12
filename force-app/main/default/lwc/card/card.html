@@ -54,10 +54,13 @@
             <div style="padding: 10px; display: flex; flex-direction: column; justify-content: space-between; font-weight: bold; font-size: 16px;">
                 <div style="font-size: 14px;">{product.Referencia__c} - {product.Name}</div>
                 <div if:true={getDisplayEmPromo}>
-                    <div>
-                        <svg fill="#000000" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><g  stroke-width="0"></g><g  stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M8.5 17h9c.277 0 .5.223.5.5s-.223.5-.5.5h-9c-.277 0-.5-.223-.5-.5s.223-.5.5-.5zm4.5 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 1c.558 0 1 .442 1 1s-.442 1-1 1-1-.442-1-1 .442-1 1-1zm0-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 1c.558 0 1 .442 1 1s-.442 1-1 1-1-.442-1-1 .442-1 1-1zM25 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 1c.558 0 1 .442 1 1s-.442 1-1 1-1-.442-1-1 .442-1 1-1zM.446 15.67c-.587.58-.583 1.542 0 2.124l11.76 11.76c.58.582 1.542.587 2.123 0L28.855 14.85c.247-.25.532-.48.768-.856.235-.376.376-.87.376-1.544V1.5c0-.823-.678-1.5-1.5-1.5h-11c-1.158 0-1.824.624-2.35 1.145zm.703.712L15.85 1.856c.533-.526.808-.856 1.65-.856H28.5c.285 0 .5.214.5.5v10.952c0 .547-.093.805-.224 1.013-.13.21-.344.394-.63.684l-14.53 14.7c-.197.2-.5.2-.703-.002l-11.76-11.76c-.203-.203-.205-.508-.004-.706z"></path></g></svg>                    </div>
                     <div style="color: rgb(225, 50, 50)">Em Promo</div>
                 </div>
+
+                <div if:true={getDisplayExpress}>
+                    <div style="color: rgb(254, 147, 57)">Entrega imediata</div>
+                </div>
+
                 <div if:true={getShowTrending} style="color: #060693; margin: 10px; text-align: center; font-weight: bold; font-size: 16px; border: 1px solid; border-radius: 8px;">
                      {getIndex}° mais popular
                 </div>
@@ -79,77 +82,92 @@
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-6">
 
                     
+                    <div if:false={showVendaCruza} style="min-height: 450px;">
+                        <div style="min-height: 450px; display: grid; grid-template-columns: 1fr 2fr;">
 
-                    <div style="min-height: 450px; display: grid; grid-template-columns: 1fr 2fr;">
-
-                        <div>
-                            <div class="slds-m-bottom_medium">
-                                <div style="margin-left: 10px .5rem 0 .5rem; text-align: center; font-size: 18px; font-weight: 500;">
-                                   {product.Name}
-                                </div>
-                            </div>
-
-                            <img 
-                                src={product.Product_Image_Link__c}
-                                loading="eager"
-                                style="max-width: 100%; min-height: 80%; padding: 10px 30px;"
-                            ></img>
-
-                        </div>
-
-                        <div>
-
-                            <div if:true={modalConfig.isLoading} style="display: flex; justify-content: center; margin-top: 100px;">
-                                <div style="height: 80px; display: grid; place-content: center;">
-                                    <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                                </div>
-                            </div>
-
-                            <div if:false={modalConfig.isLoading} >
-                                    <div>
-                                        <div class="slds-p-around_medium lgc-bg">
-                                            <lightning-input disabled={modalConfig.isInsertCommentLoading} type="text" placeholder="Comentar sobre o produto..." onchange={handleInputChange}></lightning-input>
-                                        </div>
+                            <div>
+                                <div class="slds-m-bottom_medium">
+                                    <div style="margin-left: 10px .5rem 0 .5rem; text-align: center; font-size: 18px; font-weight: 500;">
+                                       {product.Name}
                                     </div>
-                                    <div>
-
-                                        <div if:true={modalConfig.isInsertCommentLoading} style="display: flex; justify-content: center; margin-top: 100px;">
-                                            <div style="height: 80px; display: grid; place-content: center;">
-                                                <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                </div>
+    
+                                <img 
+                                    src={product.Product_Image_Link__c}
+                                    loading="eager"
+                                    style="max-width: 100%; min-height: 80%; padding: 10px 30px;"
+                                ></img>
+    
+                            </div>
+    
+                            <div>
+    
+                                <div if:true={modalConfig.isLoading} style="display: flex; justify-content: center; margin-top: 100px;">
+                                    <div style="height: 80px; display: grid; place-content: center;">
+                                        <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                    </div>
+                                </div>
+    
+                                <div if:false={modalConfig.isLoading} >
+                                        <div>
+                                            <div class="slds-p-around_medium lgc-bg">
+                                                <lightning-input disabled={modalConfig.isInsertCommentLoading} type="text" placeholder="Comentar sobre o produto..." onchange={handleInputChange}></lightning-input>
                                             </div>
                                         </div>
-
-                                        <div if:false={modalConfig.isInsertCommentLoading} style="margin: 50px;">
-                                            <template for:each={comments} for:item="comment" for:index="index">
-                                                <div key={comment}>
-                                                    <div style="display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 20px">
-                                                        <div style="margin-bottom: 20px">
-                                                            <div style="font-weight: bold;">
-                                                                {comment.CreatedBy.Name} - ({comment.CreatedBy.Profile.Name} - Hoje)
-                                                            </div>
-                                                            <div>
-                                                                {comment.Comment__c}
-                                                            </div>
-                                                        </div>
-                                                        <a style="width: 20px; cursor: pointer" onclick={deleteComment} data-value={comment.Comment__c}>
-                                                            <svg viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M32 241.6c-11.2 0-20-8.8-20-20s8.8-20 20-20l940 1.6c11.2 0 20 8.8 20 20s-8.8 20-20 20L32 241.6zM186.4 282.4c0-11.2 8.8-20 20-20s20 8.8 20 20v688.8l585.6-6.4V289.6c0-11.2 8.8-20 20-20s20 8.8 20 20v716.8l-666.4 7.2V282.4z" fill=""></path><path d="M682.4 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM367.2 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM524.8 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM655.2 213.6v-48.8c0-17.6-14.4-32-32-32H418.4c-18.4 0-32 14.4-32 32.8V208h-40v-42.4c0-40 32.8-72.8 72.8-72.8H624c40 0 72.8 32.8 72.8 72.8v48.8h-41.6z" fill=""></path></g></svg>
-                                                        </a>
-                                                    </div>
+                                        <div>
+    
+                                            <div if:true={modalConfig.isInsertCommentLoading} style="display: flex; justify-content: center; margin-top: 100px;">
+                                                <div style="height: 80px; display: grid; place-content: center;">
+                                                    <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                                                 </div>
-                                            </template>
+                                            </div>
+    
+                                            <div if:false={modalConfig.isInsertCommentLoading} style="margin: 50px;">
+                                                <template for:each={comments} for:item="comment" for:index="index">
+                                                    <div key={comment}>
+                                                        <div style="display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 20px">
+                                                            <div style="margin-bottom: 20px">
+                                                                <div style="font-weight: bold;">
+                                                                    {comment.CreatedBy.Name} - ({comment.CreatedBy.Profile.Name} - Hoje)
+                                                                </div>
+                                                                <div>
+                                                                    {comment.Comment__c}
+                                                                </div>
+                                                            </div>
+                                                            <a style="width: 20px; cursor: pointer" onclick={deleteComment} data-value={comment.Comment__c}>
+                                                                <svg viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g><path d="M32 241.6c-11.2 0-20-8.8-20-20s8.8-20 20-20l940 1.6c11.2 0 20 8.8 20 20s-8.8 20-20 20L32 241.6zM186.4 282.4c0-11.2 8.8-20 20-20s20 8.8 20 20v688.8l585.6-6.4V289.6c0-11.2 8.8-20 20-20s20 8.8 20 20v716.8l-666.4 7.2V282.4z" fill=""></path><path d="M682.4 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM367.2 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM524.8 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM655.2 213.6v-48.8c0-17.6-14.4-32-32-32H418.4c-18.4 0-32 14.4-32 32.8V208h-40v-42.4c0-40 32.8-72.8 72.8-72.8H624c40 0 72.8 32.8 72.8 72.8v48.8h-41.6z" fill=""></path></g></svg>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            
                                         </div>
-                                        
-                                    </div>
+                                </div>
+    
                             </div>
-
                         </div>
                     </div>
 
+                    <div if:true={showVendaCruza}>
+                        <lightning-card> <img src={imageURL}/> </lightning-card>
+                    </div>
+
+
+                 
+
                 </div>
+
                 <footer class="slds-modal__footer" style="border-radius: 0 0 10px 10px">
-                    <div class="slds-button-group" role="group">
-                        <div if:true={modalConfig.rejectLabel}>
-                            <lightning-button data-name="reject" data-modal="changePayment" label={modalConfig.rejectLabel} title="Voltar atrás" onclick={closeModal} class="slds-m-left_x-small" variant="brand"></lightning-button>
+                    <div class="slds-button-group" role="group" style="display: flex; flex-direction: row-reverse; justify-content: space-between; width: 100%; font-size: 16px">
+                        <lightning-button-group>
+                            <button class="slds-button slds-button_brand" style='' data-question='selectionByState' data-value='1'>Criar Orçamento</button>
+                            <button class="slds-button slds-button_brand" style='' data-question='selectionByState' data-value='1'>Produtos Similares</button>
+                            <button class="slds-button slds-button_brand" style='' onclick={handleShowVendaCruzada} data-question='selectionByState' data-value='1'>Venda Cruzada</button>
+                        </lightning-button-group>
+
+                        <div>
+                            <button class="slds-button slds-button_brand" style='' onclick={closeModal} data-question='selectionByState' data-value='1'>Voltar</button>
                         </div>
                     </div>
                 </footer>

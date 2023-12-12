@@ -5,6 +5,8 @@ import getProductComments from '@salesforce/apex/TrendingController.getProductCo
 import createProductComment from '@salesforce/apex/TrendingController.createProductComment';
 import deleteProductComment from '@salesforce/apex/TrendingController.deleteProductComment';
 
+import SAMPLE_IMAGE from '@salesforce/resourceUrl/vendaCruzada';
+
 export default class Card extends LightningElement {
     @api recordId;
     @api product = {};
@@ -12,6 +14,8 @@ export default class Card extends LightningElement {
     @api index;
 
     @api showTrending = 'true';
+
+    imageURL = SAMPLE_IMAGE;
 
     get getShowTrending(){
         return this.showTrending == 'true';
@@ -29,10 +33,15 @@ export default class Card extends LightningElement {
         return this.index + 1;
     }
 
-    toPromo = ['01t3s000003uUdTAAU', '01t3s000003uUckAAE'];
+    toPromo = ['01t3s000003uUdTAAU', '01t1I000004TXTlQAO'];
+    express = ['01t3s000003uUdwAAE'];
 
     get getDisplayEmPromo(){
-        return this.toPromo.includes(this.recordId);
+        return  this.toPromo.includes(this.recordId);
+    }
+
+    get getDisplayExpress(){
+        return  this.express.includes(this.recordId);
     }
 
     connectedCallback(){
@@ -41,11 +50,14 @@ export default class Card extends LightningElement {
         document.addEventListener("keydown", (e)=> {
             console.log('key press: ' + e.key);
             if(e.key == 'Escape'){
-                if(this.modalConfig.showModal)
+                if(this.modalConfig.showModal){
                     this.setModalConfigToDefault();
+                    this.showVendaCruza = false;
+                }
             }
-            if(e.key == 'Enter' && this.modalConfig.showModal == true && this.newComment)
+            if(e.key == 'Enter' && this.modalConfig.showModal == true && this.newComment){
                 this.insertComment();
+            }
 
         }, false);
     }
@@ -87,6 +99,9 @@ export default class Card extends LightningElement {
         if(this.currentVote == 'UP'){
             this.currentVote = null;
             this.votes -= 1;
+        } else if(this.currentVote == 'DOWN') {
+            this.currentVote = 'UP';
+            this.votes += 2;
         } else {
             this.currentVote = 'UP';
             this.votes += 1;
@@ -104,6 +119,9 @@ export default class Card extends LightningElement {
         .catch(err => {
             console.log(JSON.stringify(err));
         })
+        .finally(()=>{
+            this.parent.runGetMostLiked(parent);
+        })
 
     }
     handleDownVote(){
@@ -114,6 +132,9 @@ export default class Card extends LightningElement {
         if(this.currentVote == 'DOWN'){
             this.currentVote = null;
             this.votes += 1;
+        } else if(this.currentVote == 'UP'){
+            this.currentVote = 'DOWN';
+            this.votes -= 2;
         } else {
             this.currentVote = 'DOWN';
             this.votes -= 1;
@@ -130,6 +151,9 @@ export default class Card extends LightningElement {
         })
         .catch(err => {
             console.log(JSON.stringify(err));
+        })
+        .finally(()=>{
+            this.parent.runGetMostLiked(parent);
         })
 
     }
@@ -152,6 +176,10 @@ export default class Card extends LightningElement {
         })
         .catch(err => {
             console.log(JSON.stringify(err));
+        })
+        .finally(()=>{
+            this.parent.runGetFavorites(parent);
+
         })
         console.log('are favorite: ' + this.areFavorited);
     }
@@ -199,6 +227,7 @@ export default class Card extends LightningElement {
     }
 
     openModal(){
+        this.showVendaCruza = false;
         this.modalConfig.showModal = true;
 
         this.runGetComments();
@@ -298,9 +327,16 @@ export default class Card extends LightningElement {
             message: '',
             rejectLabel: 'Voltar'
         };
+        this.showVendaCruza = false;
     }
 
     closeModal(){
         this.setModalConfigToDefault();
+    }
+
+    showVendaCruza = false;
+
+    handleShowVendaCruzada(){
+        this.showVendaCruza = true;
     }
 }

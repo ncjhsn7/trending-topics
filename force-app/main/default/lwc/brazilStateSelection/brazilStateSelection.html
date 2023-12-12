@@ -1,6 +1,6 @@
 <!-- sldsValidatorIgnore -->
 <template>
-  <article class="slds-card" style="display: grid; grid-template-rows: auto 1fr 1fr;">
+  <article class="slds-card" style="display: grid; grid-template-rows: auto auto;">
     
     <div style="padding: 15px; display: grid; grid-template-columns: 1fr 3fr 1fr; grid-gap: 20px;">
       <lightning-button-group style="margin: -4px 0 0 0;">
@@ -37,7 +37,7 @@
       </lightning-button-group>
     </div>
 
-    <div  style="display: grid;grid-template-columns: 1fr 3fr 200px; grid-gap: 10px; margin-bottom: 20px">
+    <div  style="display: grid;grid-template-columns: 1fr 3fr 200px; grid-gap: 10px; margin-bottom: 20px; max-height: 600px;">
 
         <div>
           <div style="width: 450px; padding: 15px">
@@ -746,7 +746,7 @@
         </div>
 
         <div style="display: flex; align-items: center;">
-          <div style="height: 60%; width: 100%; background: #0094d9; padding: 10px 0 10px 10px; border-radius: 19px 0px 0px 25px; color: white; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+          <div style="height: 350px; width: 100%; background: #0094d9; padding: 10px 0 10px 10px; border-radius: 19px 0px 0px 25px; color: white; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
                 <div style="text-align: center;font-weight: bold;font-size: 18px;">Tendências no Brasil</div>
                 
                 <div style="display: flex; flex-direction: column; color: white; cursor: pointer; padding: 15px">
@@ -776,63 +776,126 @@
 
     </div>
 
-    <div>
-        <lightning-button-group style="margin-left:32vw;margin-top:10vh">
-        <template if:true={isMostPopular}>
-            <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
-            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
-            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
-        </template>
+    <div style="display: grid; grid-template-rows: 60pxfr 1fr;">
+        <div style="margin-top:50px; display: flex; justify-content: center; align-items: center; height: 5px;">
+          <lightning-button-group>
+            <template if:true={isMostPopular}>
+                <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
+                data-question='selectionByState' data-value='isMostPopular'>Melhores Oportunidades</button>
+                <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+                data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
+                <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+                data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+            </template>
 
-        <template if:true={isMyFavorites}>
-            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
-            <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
-            <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-            data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
-        </template>
+            <template if:true={isMyFavorites}>
+                <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+                data-question='selectionByState' data-value='isMostPopular'>Melhores Oportunidades</button>
+                <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
+                data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
+                <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+                data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+            </template>
 
-        <template if:true={isMostVoted}>
-          <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-          data-question='selectionByState' data-value='isMostPopular'>Mais Populares</button>
-          <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
-          data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
-          <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
-          data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+            <template if:true={isMostVoted}>
+              <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+              data-question='selectionByState' data-value='isMostPopular'>Melhores Oportunidades</button>
+              <button class="slds-button slds-button_neutral" style='width: 210px' onclick={handleOptionsTrending} 
+              data-question='selectionByState' data-value='isMyFavorites'>Meus Favoritos</button>
+              <button class="slds-button slds-button_brand" style='width: 210px' onclick={handleOptionsTrending} 
+              data-question='selectionByState' data-value='isMostVoted'>Mais Votados</button>
+          </template>
+        </lightning-button-group>
+      </div>
+
+      <template if:true={isMostPopular}>
+        <div if:true={isLoading.mostPopular} style="height: 400px; display: flex; justify-content: center; align-items: center;">
+            <div>
+              <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            </div>  
+        </div>
+        <div if:false={isLoading.mostPopular}>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 20px; padding: 20px; margin: 10px 120px">
+            <template for:each={promos} for:item="product" for:index="index">
+                <c-card 
+                  record-id={product.Product2Id} 
+                  product={product}
+                  parent={self}
+                  key={product.Product2Id}
+                  index={index}
+                  show-trending="false"
+                ></c-card>
+            </template>
+          </div>
+        </div>
+
       </template>
-    </lightning-button-group>
 
-    <template if:true={isMyFavorites}>
-        <div style="height: 100%;">
-          <div if:true={isLoading.favoritesSearch} style="height: 50%; display: flex; justify-content: center; align-items: center;">
+      <template if:true={isMostVoted}>
+        <div>
+          <div if:true={isLoading.mostLiked} style="height: 400px; display: flex; justify-content: center; align-items: center;">
               <div>
                 <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
               </div>  
           </div>
-          <div if:false={isLoading.favoritesSearch}>
-              <div if:false={hasFavorites} style="margin-top: 50px;">
+          <div if:false={isLoading.mostLiked}>
+              <div if:false={hasMostLiked} style="margin: 100px 0">
                   <c-ilustrator message="Sem resultados para essa pesquisa!"></c-ilustrator>
               </div>
 
-              <div if:true={hasFavorites} style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 10px;">
-                <template for:each={myFavorites} for:item="product" for:index="index">
-                    <c-card 
-                      record-id={product.Product2Id} 
-                      product={product}
-                      key={product.Product2Id}
-                      parent={self}
-                      index={index}
-                      show-trending="true"
-                    ></c-card>
-                </template>
+              <div if:true={hasMostLiked}>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 20px; padding: 20px; margin: 10px 120px">
+                  <template for:each={mostLiked} for:item="product" for:index="index">
+                      <c-card 
+                        record-id={product.Product2Id} 
+                        product={product}
+                        parent={self}
+                        key={product.Product2Id}
+                        index={index}
+                        show-trending="false"
+                      ></c-card>
+                  </template>
+                </div>
+
+                <div></div>
               </div>
           </div>
         </div>
-    </template>
+      </template>
+
+      <template if:true={isMyFavorites}>
+          <div>
+            <div if:true={isLoading.favoritesSearch} style="height: 400px; display: flex; justify-content: center; align-items: center;">
+                <div>
+                  <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                </div>  
+            </div>
+            <div if:false={isLoading.favoritesSearch}>
+                <div if:false={hasFavorites} style="margin: 100px 0">
+                    <c-ilustrator message="Sem resultados para essa pesquisa!"></c-ilustrator>
+                </div>
+
+                <div if:true={hasFavorites}>
+
+                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 20px; padding: 20px; margin: 10px 120px">
+                    <template for:each={myFavorites} for:item="product" for:index="index">
+                        <c-card 
+                          record-id={product.Product2Id} 
+                          product={product}
+                          parent={self}
+                          key={product.Product2Id}
+                          index={index}
+                          show-trending="false"
+                        ></c-card>
+                    </template>
+                  </div>
+
+                  <div></div>
+                </div>
+            </div>
+          </div>
+      </template>
     </div>
 
     <!-- <lightning-button-group style="margin: -4px 0 0 0;">

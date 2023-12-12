@@ -1,6 +1,8 @@
 import { LightningElement, api, track } from 'lwc';
 import getTrendingProducts from '@salesforce/apex/TrendingController.getTrendingProducts';
 import getFavorites from '@salesforce/apex/TrendingController.getFavorites';
+import getMostLikedProducts from '@salesforce/apex/TrendingController.getMostLikedProducts';
+import getPromos from '@salesforce/apex/TrendingController.getPromos';
 
 export default class BrazilStateSelection extends LightningElement {
 
@@ -14,6 +16,8 @@ export default class BrazilStateSelection extends LightningElement {
     @track isLoading = {
         productsSearch: true,
         favoritesSearch: true,
+        mostLiked: true,
+        mostPopular: true
     }
 
     @track trendingProducts = [];
@@ -57,6 +61,7 @@ export default class BrazilStateSelection extends LightningElement {
 
     connectedCallback(){
         this.runGetTrendingProducts();
+        this.runGetFavorites();
     }
 
     get getPlace(){
@@ -309,7 +314,7 @@ export default class BrazilStateSelection extends LightningElement {
         return 'all';
     }
 
-    optionTrending = 'isMostPopular';
+    optionTrending = 'isMyFavorites';
 
     get isMostPopular () {
         return this.optionTrending == 'isMostPopular';
@@ -330,6 +335,32 @@ export default class BrazilStateSelection extends LightningElement {
         if (value == 'isMyFavorites') {
             this.runGetFavorites();
         }
+        if (value == 'isMostVoted') {
+            this.runGetMostLiked();
+        }
+
+        if (value == 'isMostPopular'){
+            this.runGetPromos();
+        }
+        
+    }
+
+    @track promos = [];
+
+    runGetPromos(){
+
+        this.isLoading.mostPopular = true;
+
+        getPromos({})
+        .then(res => {
+            this.promos = JSON.parse(res);
+        })
+        .catch(err => {
+            console.log('Err: ', err);
+        })
+        .finally(()=>{
+            this.isLoading.mostPopular = false;
+        })
     }
 
     @track myFavorites = [];
@@ -338,11 +369,13 @@ export default class BrazilStateSelection extends LightningElement {
         return this.myFavorites.length > 0;
     }
 
-    runGetFavorites(){
-        this.isLoading.favoritesSearch = true;
+    runGetFavorites(self){
+        let comp = this || self;
+
+        comp.isLoading.favoritesSearch = true;
 
         getFavorites().then(res => {
-            this.myFavorites = JSON.parse(res);
+            comp.myFavorites = JSON.parse(res);
             console.clear();
             console.log('X: get Favorites', res);
         })
@@ -350,9 +383,34 @@ export default class BrazilStateSelection extends LightningElement {
             console.log('err: ', JSON.stringify(err));
         })
         .finally(()=>{
-            this.isLoading.favoritesSearch = false;
+            comp.isLoading.favoritesSearch = false;
         })
 
+    }
+
+
+    @track mostLiked = [];
+
+    get hasMostLiked(){
+        return this.mostLiked.length > 0;
+    }
+
+    
+    runGetMostLiked(){
+        this.isLoading.mostLiked = true;
+
+        getMostLikedProducts({
+            numProducts: 9
+        })
+        .then(res => {
+            this.mostLiked = JSON.parse(res).slice(1, 7);
+        })
+        .catch(err => {
+            console.log('Err: ', err);
+        })
+        .finally(() => {
+            this.isLoading.mostLiked = false;
+        })
     }
 
 }

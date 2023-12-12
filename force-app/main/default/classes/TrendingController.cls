@@ -117,13 +117,13 @@ public without sharing class TrendingController {
                 count(Id) n, 
                 Ambiente__c, 
                 Product2Id, 
-                description,
+                Product2.Name,
                 quote.Opportunity.Loja__r.Grupo_Loja__c,
                 Product2.Referencia__c,
                 Product2.Product_Image_Link__c
             FROM quoteLineItem 
-            WHERE Product2Id IN :result
-            GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c
+            WHERE Product2Id IN :result AND (NOT Product2.Name LIKE '%ARG %') AND (NOT Product2.Name LIKE '%REJ %') AND (NOT Product2.Name LIKE '%REJUNTE %') AND (NOT Product2.Name LIKE '%NIVELADOR %') 
+            GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, Product2.Name, Product2.Product_Image_Link__c
             ORDER BY count(id) DESC LIMIT :numProducts
         ]);
     }
@@ -139,15 +139,15 @@ public without sharing class TrendingController {
         
         return JSON.serialize([
             SELECT
-                count(Product2Id) product, 
+                Product2Id,
                 description,
                 Product2.Referencia__c,
                 Product2.Product_Image_Link__c,
                 Product2.Name
             FROM quoteLineItem 
             WHERE Product2Id IN :favorites
-            GROUP BY Description, Product2.Referencia__c, Product2.Product_Image_Link__c, Product2.Name
-            LIMIT 6
+            GROUP BY Description, Product2.Referencia__c, Product2.Product_Image_Link__c, Product2.Name, Product2Id
+            LIMIT 2000
         ]);
     }
 
