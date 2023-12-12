@@ -128,11 +128,12 @@ public without sharing class TrendingController {
         //     return String.valueOf(Cache.Org.get('top6ProductTrending'));
         // }
 
-        String fields = 'SELECT count(Id) n, Ambiente__c, Product2Id, description,quote.Opportunity.Loja__r.Grupo_Loja__c,Product2.Referencia__c,Product2.Product_Image_Link__c FROM quoteLineItem WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null'; 
+        String fields = 'SELECT count(Id) n, Ambiente__c, Product2Id, Product2.Name ,quote.Opportunity.Loja__r.Grupo_Loja__c,Product2.Referencia__c,Product2.Product_Image_Link__c FROM quoteLineItem WHERE quote.Opportunity.Loja__r.Grupo_Loja__c != null'; 
         String condition = '';
-        String groupBy = ' GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, description, Product2.Product_Image_Link__c';
+        String groupBy = ' GROUP BY Ambiente__c, quote.Opportunity.Loja__r.Grupo_Loja__c, Product2.Referencia__c, Product2Id, Product2.Name, Product2.Product_Image_Link__c';
         String order = ' ORDER BY count(id) DESC LIMIT :numProducts';
         
+
         if (!ambiente.equalsIgnoreCase('Qualquer ambiente')) {
             condition += ' AND Ambiente__c = :ambiente';
         }
@@ -155,21 +156,18 @@ public without sharing class TrendingController {
 
             List<String> regions = region.split(',');
             condition += ' AND quote.Opportunity.Loja__r.Grupo_Loja__c IN :regions';
-        } else if (byState) {
+        } 
+        
+        if (byState) {
             condition += ' AND quote.Opportunity.Loja__r.Grupo_Loja__c = :state';
         }
 
         condition += ' AND quote.LastModifiedDate <= LAST_N_DAYS:' + timeStamp;
 
         String query = fields + condition + timeStamp + groupBy + order;
-        System.debug('X: query > ' + Database.query(query));
-
-        String result = JSON.serialize(Database.query(query));
-
-        
         //Cache.Org.put('top6ProductTrending', result, 300);
 
-        return result;
+        return JSON.serialize(Database.query(query));
     }
     /*
 [
@@ -244,7 +242,7 @@ public without sharing class TrendingController {
             }
         }
 
-        JSON.serialize(result);
+        return JSON.serialize(result);
     }
 
     public class ProductTrendingInfo {
