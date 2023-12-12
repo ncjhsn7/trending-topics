@@ -2,16 +2,34 @@ import { LightningElement, api, track } from 'lwc';
 
 export default class Card extends LightningElement {
     @api recordId;
+    @api product = {};
+    @api parent;
+    @api index;
+
     @api votes;
     @api currentVote;
     @api areFavorited;
 
     @track isLoading = true;
 
-    @api parent;
-    
+
+
+    get getIndex(){
+        return this.index + 1;
+    }
+
+
+
     connectedCallback(){
         this.runInit();
+
+        document.addEventListener("keydown", (e)=> {
+            console.log('key press: ' + e.key);
+            if(e.key == 'Escape'){
+                if(this.modalConfig.showModal)
+                    this.setModalConfigToDefault();
+            }
+        }, false);
     }
 
     async runInit(){
@@ -80,9 +98,7 @@ export default class Card extends LightningElement {
         })
     }
 
-    openModal(){
-        console.log('open modal');
-    }
+
 
     get dissableUpVote(){
         return this.currentVote == 'UP';
@@ -91,4 +107,28 @@ export default class Card extends LightningElement {
     get dissableDownVote(){
         return this.currentVote == 'DOWN';
     }
+
+    openModal(){
+        this.modalConfig.showModal = true;
+
+        
+    }
+
+    @track modalConfig = {
+        showModal: false,
+        isLoading: true,
+        message: '',
+        rejectLabel: 'Voltar'
+    };
+
+    setModalConfigToDefault(){
+        this.modalConfig = {
+            showModal: false,
+            isLoading: true,
+            message: '',
+            rejectLabel: 'Voltar'
+        };
+    }
+
+
 }

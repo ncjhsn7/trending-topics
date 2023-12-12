@@ -1,11 +1,148 @@
 import { LightningElement, api, track } from 'lwc';
+import getTrendingProducts from '@salesforce/apex/TrendingController.getTrendingProducts';
 
 export default class BrazilStateSelection extends LightningElement {
+
+    self = this;
 
     @api recordId;
 
     @track selectionByState = true;
     @track selectedState;
+
+    @track isLoading = {
+        productsSearch: true
+    }
+
+    @track trendingProducts = [];
+
+    get dontHasTrendingItems(){
+        console.log('showItems: ', this.trendingProducts.length == 0)
+        return this.trendingProducts.length == 0;
+    }
+
+    runGetTrendingProducts(){
+        // public static String getTrendingProducts(String ambiente, Boolean byState, String state, String region, String timeStamp, String numProducts)
+
+        this.isLoading.productsSearch = true;
+
+        const request = {
+            ambiente: this.getAmbient,
+            byState: this.selectionByState && this.currentRegion == 'all' ? false : this.selectionByState,
+            state: this.selectedState,
+            region: this.currentRegion,
+            timeStamp: this.currentTimeStamp,
+            numProducts: 6
+        };
+
+        console.table(request);
+
+        getTrendingProducts(
+            request
+        )
+        .then(res => {
+            console.log(res);
+            this.trendingProducts = JSON.parse(res);
+        })
+        .catch(err => {
+            console.log('err: ', JSON.stringify(err));
+        })
+        .finally(()=>{
+            this.isLoading.productsSearch = false;
+        })
+
+    }
+
+    connectedCallback(){
+        this.runGetTrendingProducts();
+    }
+
+    get getPlace(){
+        let current = '';
+
+        if(!this.selectionByState)
+            current = this.currentRegion;
+
+        if(this.selectionByState)
+            current = this.selectedState;
+
+        if(!!!this.selectedState)
+            current = 'todo Brasil';
+
+        return current;
+    }
+
+    get getNo(){
+        return this.selectedState != null ? ' no ' : ' em ';
+    }
+
+    get getAmbient(){
+        return this.selectedAmbient;
+    }
+
+    get getIsOneDay(){
+        return this.currentTimeStamp == '1';
+    }
+
+    get getIsSevenDay(){
+        return this.currentTimeStamp == '7';
+    }
+
+    get getIsfiftyteenDay(){
+        return this.currentTimeStamp == '15';
+    }
+
+    currentTimeStamp = 1;
+
+    handleTimeSelection(event){
+        const value = event.target.dataset.value;
+
+        this.currentTimeStamp = value;
+
+        console.log(this.currentTimeStamp);
+
+        this.runGetTrendingProducts();
+    }
+
+    selectedAmbient = 'Qualquer ambiente';
+
+    get ambients() {
+        return [
+            { label: 'Qualquer ambiente', value: 'Qualquer ambiente' },
+            { label: 'Área Externa', value: 'Área Externa' },
+            { label: 'Cozinha', value: 'Cozinha' },
+            { label: 'Espaço Gourmet', value: 'Espaço Gourmet' },
+            { label: 'Escada', value: 'Escada' },
+            { label: 'Garagem', value: 'Garagem' },
+            { label: 'Dormitório', value: 'Dormitório' },
+            { label: 'Closet', value: 'Closet' },
+            { label: 'Área de Serviço', value: 'Área de Serviço' },
+            { label: 'Dormitório de Serviço', value: 'Dormitório de Serviço' },
+            { label: 'Escritório', value: 'Escritório' },
+            { label: 'Sala', value: 'Sala' },
+            { label: 'Banheiro', value: 'Banheiro' },
+            { label: 'Lavabo', value: 'Lavabo' },
+            { label: 'Officina', value: 'Officina' },
+            { label: 'Fachada', value: 'Fachada' },
+            { label: 'Piscina', value: 'Piscina' },
+            { label: 'Estabelecimento Comercial', value: 'Estabelecimento Comercial' },
+            { label: 'Varanda', value: 'Varanda' },
+            { label: 'Sacada', value: 'Sacada' },
+            { label: 'Terraço', value: 'Terraço' },
+            { label: 'Circulação', value: 'Circulação' },
+            { label: 'Hall de Entrada', value: 'Hall de Entrada' },
+            { label: 'Itens de Assentamento', value: 'Itens de Assentamento' },
+            { label: 'Toda casa', value: 'Toda casa'},
+        ];
+    }
+
+    handleChange(event){
+        this.selectedAmbient = event.detail.value;
+        this.runGetTrendingProducts();
+    }
+
+
+
 
     handleRegionClick(event) {
         event.preventDefault();
@@ -22,6 +159,8 @@ export default class BrazilStateSelection extends LightningElement {
 
         console.log(this.selectedState);
 
+        this.runGetTrendingProducts();
+
         return false;
     }
 
@@ -32,6 +171,8 @@ export default class BrazilStateSelection extends LightningElement {
         console.log(value);
 
         this.selectionByState = value == 'Sim';
+
+        this.runGetTrendingProducts();
     }
 
 
